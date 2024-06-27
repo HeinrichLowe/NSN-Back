@@ -1,0 +1,18 @@
+# local env files
+.env
+.env.local
+.env*.local
+
+# vscode
+.vscode
+
+# python
+.python-version
+__pycache__/
+__pycache__/*
+
+# python virtual environment
+pymod/
+
+#others
+task.py
