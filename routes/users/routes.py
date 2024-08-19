@@ -1,7 +1,5 @@
 from fastapi import APIRouter, Depends, Request, status
 from fastapi.responses import JSONResponse
-from fastapi.security import OAuth2PasswordRequestForm
-from fastapi.exceptions import HTTPException
 import controllers.users as UserCtrl
 from .schemas import *
 from db import *
@@ -9,12 +7,12 @@ from db import *
 router = APIRouter()
 
 @router.post("/signup")
-async def signup(input: SignupRequest = Depends(), db_session = DependsConnection) -> SignupResponse:
+async def signup(input: SignupRequest, db_session = DependsConnection) -> SignupResponse:
     try:
-        signup = await UserCtrl.signup(db_session, input)
+        user_id = await UserCtrl.signup(db_session, input)
 
         return JSONResponse(
-            content=signup,
+            content=user_id,
             status_code=status.HTTP_201_CREATED
         )
     
@@ -25,16 +23,19 @@ async def signup(input: SignupRequest = Depends(), db_session = DependsConnectio
         )
     
 @router.post("/signin")
-async def signin(input: OAuth2PasswordRequestForm = Depends(), db_session = DependsConnection) -> SigninResponse:
+async def signin(input: SigninRequest, db_session = DependsConnection) -> SigninResponse:
     try:
-        user = SigninRequest(
-            username=input.username,
-            password=input.password
-        )
+        login = await UserCtrl.signin(db_session, input)
+
+        print(login)
+
+        if login == None:
+            return JSONResponse(
+                content={"msg": "User not exist"},
+                status_code=status.HTTP_401_UNAUTHORIZED
+            )
         
-        login = await UserCtrl.signin(db_session, user)
-        
-        if not login:
+        if login == False:
             return JSONResponse(
                 content={"msg": "Invalid Username or Password"},
                 status_code=status.HTTP_401_UNAUTHORIZED

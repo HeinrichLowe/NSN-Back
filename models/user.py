@@ -6,8 +6,8 @@ class User(Base):
     __tablename__ = "user"
 
     id: str = Column(UUID, primary_key=True, server_default=func.uuid_generate_v4())
-    email: str = Column(String, nullable=False)
-    username: str = Column(String(64), nullable=False)
+    email: str = Column(String, nullable=True)
+    username: str = Column(String(64), nullable=True)
     password: str = Column(String(256), nullable=False)
     full_name: str = Column(String(512), nullable=False)
     avatar: str = Column(String)

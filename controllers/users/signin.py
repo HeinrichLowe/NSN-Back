@@ -12,12 +12,15 @@ REFRESH_TOKEN_EXPIRATION = config('REFRESH_TOKEN_EXPIRATION')
 Sha = pbkdf2_sha256
 
 async def signin(db_session, input):
-    user_on_db = await UserCommand.search_by_username(db_session, User(
-        username=input.username.lower()
-    ))
+    try:
+        user_on_db = await UserCommand.search_by_username(db_session, User(
+            username=input.username.lower()
+        ))
+    except Exception:
+        return None
 
     if not Sha.verify(input.password, user_on_db.password):
-        return None
+        return False
 
     access_exp = datetime.datetime.now(datetime.UTC) + datetime.timedelta(minutes=int(ACCESS_TOKEN_EXPIRATION))
 
