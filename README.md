@@ -30,10 +30,8 @@ alembic upgrade head
 
 ```bash
 python main.py
-
-# or
-
-Pressing 'F5' and select 'FastAPI' to launch and debug a FastAPI web application.
 ```
+
+- Or just press 'F5' and select 'FastAPI' to launch and debug a FastAPI web application.
 
 You can open [http://localhost:8000/test](http://localhost:8000/test) to verify if the server started correctly.
