@@ -1,18 +1,12 @@
 # local env files
 .env
-.env.local
-.env*.local
-
-# vscode
-.vscode
 
 # python
-.python-version
-__pycache__/
-__pycache__/*
+**/__pycache__
+venv
 
-# python virtual environment
-venv/
+# pytest
+.pytest_cache
 
 #others
 task.py

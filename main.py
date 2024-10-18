@@ -1,8 +1,8 @@
+import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routes import UserRoute, PostRoute
 import uvicorn
-import logging
+from routes import UserRoute, PostRoute
 
 app = FastAPI()
 

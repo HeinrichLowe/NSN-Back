@@ -1,0 +1,24 @@
+repos:
+-   repo: local
+    hooks:
+    -   id: pylint
+        name: pylint
+        entry: pylint
+        language: system
+        types: [python]
+        exclude: ^alembic/
+        args:
+          [
+            "-rn", # Only display messages
+            "-sn", # Don't display the score
+            "--rcfile=.pylintrc", # Link to your conifg file
+            "--load-plugins=pylint.extensions.docparams", # Load an extension
+          ]
+-   repo: local
+    hooks:
+    -   id: requirements
+        name: requirements
+        entry: bash -c 'venv/scripts/pip freeze > requirements.txt; git add requirements.txt' # Change 'scripts' to 'bin' when the environment is Linux.
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
