@@ -1,4 +1,4 @@
-from db.base import Base
+from src.infra.db.settings import Base
 from sqlalchemy import Column, Integer, ForeignKey, UniqueConstraint, UUID, func
 
 class Friend(Base):

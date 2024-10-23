@@ -1,6 +1,6 @@
-from db.base import Base
-from sqlalchemy import Column, Integer, String, ForeignKey, TIMESTAMP, UUID, func
 from datetime import datetime
+from src.infra.db.settings import Base
+from sqlalchemy import Column, Integer, String, ForeignKey, TIMESTAMP, UUID, func
 
 class Post_Comment(Base):
     __tablename__ = "post_comment"

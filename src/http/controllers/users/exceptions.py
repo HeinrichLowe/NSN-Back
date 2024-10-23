@@ -1,7 +1,5 @@
-from fastapi import status
-
 class UserDuplicatedException(Exception):
-    pass 
+    pass
 
 
 class UserNotFound(Exception):

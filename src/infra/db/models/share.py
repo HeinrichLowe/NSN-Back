@@ -1,4 +1,4 @@
-from db.base import Base
+from src.infra.db.settings import Base
 from sqlalchemy import Column, Integer, ForeignKey, TIMESTAMP, UUID, func
 from datetime import datetime
 

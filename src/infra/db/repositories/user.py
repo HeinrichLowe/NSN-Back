@@ -1,16 +1,20 @@
-from sqlalchemy import select, insert, update, delete, or_, and_, not_, func
-from sqlalchemy.ext.asyncio import AsyncSession
-from datetime import datetime
-from models.migrations import *
+#from datetime import datetime
+from typing import List
+from sqlalchemy import insert, select#, update, delete, func
+from src.infra.db.settings.connection import Connection
+from src.infra.db.models.user import User
+from src.domain.entities.user import User as UserEntity
+from src.data.interfaces.user_repository import IUserRepository
 
-class UserCommand:
-    def get_all(conn):
-        with conn.connect() as cur:
-            return cur.execute(select(User)).all()
-            
-    async def register(db_session: AsyncSession, user: User) -> User:
-        try:
-            async with db_session() as cur:
+class UserRepository(IUserRepository):
+    async def get_all(self) -> List[UserEntity]:
+        async with Connection() as session:
+            result =  await session.execute(select(User))
+            return result.all()
+
+    async def register(self, user: User) -> UserEntity:
+        async with Connection() as session:
+            try:
                 sql = insert(user.__class__).\
                     values(
                         email=user.email,
@@ -21,14 +25,15 @@ class UserCommand:
                 ).\
                     returning(User)
 
-            result = await cur.execute(sql)
-            await cur.commit()
-            return result.scalars().one()
-        
-        except Exception as err:
-            raise err
+                result = await session.execute(sql)
+                await session.commit()
+                return result.scalar_one_or_none()
 
-    def update_inf(conn, user, params):
+            except Exception as err:
+                await session.rollback()
+                raise err
+    """
+    def update_inf(self, conn, user, params):
         with conn.begin() as cur:
             try:
                 sql = update(User) \
@@ -38,36 +43,41 @@ class UserCommand:
             except Exception as err:
                 print(err)
                 raise Exception()
-    
-    async def search_by_id(db_session: AsyncSession, credentials: User) -> User:
+
+    async def search_by_id(self, db_session: AsyncSession, credentials: User) -> User:
         async with db_session() as conn:
             sql = select(User).where(
                 User.id == credentials.id,
-                User.deleted_at == None
+                User.deleted_at is None
             )
             result = await conn.execute(sql)
             return result.scalars().one()
 
-    async def search_by_credentials(db_session: AsyncSession, credentials: User) -> User:
+    async def search_by_credentials(self, db_session: AsyncSession, credentials: User) -> User:
         async with db_session() as conn:
             sql = select(User).where(
                 User.username == credentials.username,
                 User.password == credentials.password,
-                User.deleted_at == None
+                User.deleted_at is None
             )
             result = await conn.execute(sql)
             return result.scalars().one()
+    """
 
-    async def search_by_username(db_session: AsyncSession, credentials: User) -> User:
-        async with db_session() as conn:
-            sql = select(User).where(
-                User.username == credentials.username,
-                User.deleted_at == None
-            )
-            result = await conn.execute(sql)
-            return result.scalars().one()
+    async def search_by_username(self, username: str) -> UserEntity:
+        async with Connection() as session:
+            try:
+                sql = select(User).where(User.username == username, User.deleted_at.is_(None))
+                result = await session.execute(sql)
+                return result.scalar_one_or_none()
 
-    def my_profile(conn, user_id):
+            except Exception as err:
+                await session.rollback()
+                raise err
+
+# Refactory ↓↓↓
+"""
+    def my_profile(self, conn, user_id):
         with conn.connect() as cur:
             try:
                 profile = cur.execute(select(User).where(User.id == user_id)).all()
@@ -79,19 +89,19 @@ class UserCommand:
             except Exception as err:
                 print(err)
 
-    def find_user(conn, name):
+    def find_user(self, conn, name):
         with conn.connect() as cur:
             try:
                 sql = cur.execute(select(User.id, User.full_name).where(User.full_name.ilike(f"%{name}%")).order_by(User.id.desc())).all()
                 if sql == []:
                     raise Exception()
                 else:
-                    return sql 
+                    return sql
             except Exception as err:
                 print(err)
                 raise Exception()
 
-    def add_friend(conn, user, friend):
+    def add_friend(self, conn, user, friend):
         with conn.begin() as cur:
             try:
                 invert = {"user_id" : f"{friend['friend_id']}", "friend_id" : f"{user['user_id']}"}
@@ -103,8 +113,7 @@ class UserCommand:
                 print(err)
                 raise Exception()
 
-
-    def input_date():
+    def input_date(self):
         while True:
             try:
                 bday = input("Enter your birthday (Ex: 15/06/2020): ")
@@ -113,7 +122,7 @@ class UserCommand:
             except:
                 print("Invalid date, please, try again!")
 
-    def search_by_id_old(conn, user_logged):
+    def search_by_id_old(self, conn, user_logged):
         with conn.connect() as cur:
             try:
                 sql = select(User).where(User.id==user_logged)
@@ -123,7 +132,7 @@ class UserCommand:
                 print(err)
                 raise Exception()
 
-    def search_by_friend_id(conn, friends_id):
+    def search_by_friend_id(self, conn, friends_id):
         with conn.connect() as cur:
             try:
                 sql = select(User).where(User.id==friends_id.user_id)
@@ -133,7 +142,7 @@ class UserCommand:
                 print(err)
                 raise Exception()
 
-    def delete_account(conn, user):
+    def delete_account(self, conn, user):
         with conn.begin() as cur:
             try:
                 sql = delete(User).where(User.id==user.id)
@@ -141,7 +150,7 @@ class UserCommand:
             except Exception as err:
                 print(err)
 
-    def delete_friend(conn, user, friend):
+    def delete_friend(self, conn, user, friend):
         with conn.begin() as cur:
             try:
                 sql1 = delete(Friend).where(Friend.user_id==user.id, Friend.friend_id==friend.id)
@@ -151,7 +160,7 @@ class UserCommand:
             except Exception as err:
                 print(err)
 
-    def friends_select(conn, user):
+    def friends_select(self, conn, user):
         with conn.connect() as cur:
             try:
                 sql = select(User).where(User.id==Friend.friend_id, Friend.friend_id!=user.id)
@@ -159,25 +168,21 @@ class UserCommand:
             except Exception as err:
                 print(err)
 
-    def soft_delete_user(conn, user):
+    def soft_delete_user(self, conn, user):
         with conn.begin() as cur:
             try:
                 sql = update(User).values(deleted_at=func.now()).where(User.id==user.id)
                 cur.execute(sql)
             except Exception:
                 raise Exception()
-            
-    def user_verify(conn, user_id):
+
+    def user_verify(self, conn, user_id):
         with conn.begin() as cur:
             user = cur.execute(select(User).where(User.id == user_id, User.deleted_at == None)).fetchone()
             if not user:
                 raise Exception()
             return user
-    
-
-
-    
-
+"""
 """
     def edit_email(conn, cookie):
         with conn.connect() as cur:

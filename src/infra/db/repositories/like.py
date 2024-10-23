@@ -1,4 +1,4 @@
-from sqlalchemy import select, insert, delete
+"""from sqlalchemy import select, insert, delete
 from models.migrations import *
 from controllers import *
 
@@ -25,4 +25,4 @@ class LikeCommand:
                     sql = delete(Like).where(Like.author_id == user_id, Like.post_id == post_id)
                     cur.execute(sql)
             except:
-                raise Exception()
+                raise Exception()"""

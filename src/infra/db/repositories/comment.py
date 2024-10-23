@@ -1,5 +1,5 @@
-from sqlalchemy import select, insert, update, func
-from models.migrations import *
+"""from sqlalchemy import select, insert, update, func
+from src.infra.db.models import User, Friend, Like, Post, Post_Comment, Share
 
 
 class CommentCommand:
@@ -92,4 +92,4 @@ class CommentCommand:
                 comment = cur.execute(select(Post_Comment).where(Post_Comment.id == comment_id, Post_Comment.post_id == post.id, Post_Comment.deleted_at == None)).fetchone()
                 if not comment:
                     raise Exception()
-                return comment
+                return comment"""
