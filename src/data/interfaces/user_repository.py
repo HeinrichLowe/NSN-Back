@@ -1,6 +1,6 @@
 from typing import List
 from abc import ABC, abstractmethod
-from src.infra.db.models import User
+#from src.infra.db.models import User
 from src.domain.entities.user import User as UserEntity
 
 class IUserRepository(ABC):
@@ -9,7 +9,7 @@ class IUserRepository(ABC):
         pass
 
     @abstractmethod
-    async def register(self, user: User) -> UserEntity:
+    async def register(self, user: UserEntity) -> UserEntity:
         pass
 
     """

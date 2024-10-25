@@ -13,7 +13,8 @@ class UserRepositorySpy:
         pass
 
     def register(self, user: User) -> UserEntity:
-        return self.register_attributes.update(user)
+        response = self.register_attributes = user
+        return response
 
     def search_by_username(self, username) -> UserEntity:
         self.search_by_username_attributes["username"] = username
