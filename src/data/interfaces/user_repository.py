@@ -27,13 +27,16 @@ class IUserRepository(ABC):
     async def search_by_username(self, username: str) -> UserEntity:
         pass
 
-"""
+    """
     def my_profile(self, conn, user_id):
         pass
+    """
 
-    def find_user(self, conn, name):
+    @abstractmethod
+    async def search_by_name(self, name):
         pass
 
+    """
     def add_friend(self, conn, user, friend):
         pass
 
@@ -75,4 +78,4 @@ class IUserRepository(ABC):
 
     def edit_birthday(conn, cookie):
         pass
-"""
+    """

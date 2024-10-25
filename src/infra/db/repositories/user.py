@@ -76,7 +76,7 @@ class UserRepository(IUserRepository):
                 raise err
 
 # Refactory ↓↓↓
-"""
+    """
     def my_profile(self, conn, user_id):
         with conn.connect() as cur:
             try:
@@ -88,19 +88,20 @@ class UserRepository(IUserRepository):
                 return profile
             except Exception as err:
                 print(err)
+    """
 
-    def find_user(self, conn, name):
-        with conn.connect() as cur:
+    async def search_by_name(self, name: str) -> List[UserEntity]:
+        async with Connection() as session:
             try:
-                sql = cur.execute(select(User.id, User.full_name).where(User.full_name.ilike(f"%{name}%")).order_by(User.id.desc())).all()
-                if sql == []:
-                    raise Exception()
-                else:
-                    return sql
+                sql = await session.execute(select(User).where(User.full_name.ilike(f"%{name}%")).order_by(User.id.desc()))
+                response = sql.scalars().all()
+                return response
+
             except Exception as err:
                 print(err)
-                raise Exception()
+                raise err
 
+    """
     def add_friend(self, conn, user, friend):
         with conn.begin() as cur:
             try:
