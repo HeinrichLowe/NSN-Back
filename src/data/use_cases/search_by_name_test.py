@@ -1,11 +1,11 @@
 from src.infra.db.tests.user_repository import UserRepositorySpy
-from .find_by_name import FindByName
+from .search_by_name import SearchByName
 
 def test_find():
     name = "Brito Mada"
 
     repo = UserRepositorySpy()
-    find_by_name = FindByName(repo)
+    find_by_name = SearchByName(repo)
 
     response = find_by_name.find(name)
 
@@ -19,7 +19,7 @@ def test_find_error_invalid_name():
     name = "Brito Mada 123"
 
     repo = UserRepositorySpy()
-    find_by_name = FindByName(repo)
+    find_by_name = SearchByName(repo)
 
     try:
         find_by_name.find(name)
@@ -32,7 +32,7 @@ def test_find_error_too_long_name():
     name = "TestTestTestTestTestTestTestTestTest"
 
     repo = UserRepositorySpy()
-    find_by_name = FindByName(repo)
+    find_by_name = SearchByName(repo)
 
     try:
         find_by_name.find(name)
@@ -49,7 +49,7 @@ def test_find_error_user_not_found():
     name = "Test"
 
     repo = UserRepositoryError()
-    find_by_name = FindByName(repo)
+    find_by_name = SearchByName(repo)
 
     try:
         find_by_name.find(name)

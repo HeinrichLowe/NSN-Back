@@ -1,9 +1,9 @@
-from repositories.user import UserCommand
-from models.migrations import User
-from passlib.hash import pbkdf2_sha256
-from decouple import config
 import datetime
+#from repositories.user import UserCommand
+#from models.migrations import User
+from passlib.hash import pbkdf2_sha256
 import jwt
+from decouple import config
 
 SECRET_KEY = config('SECRET_KEY')
 ALGORITHM = config('ALGORITHM')
@@ -11,17 +11,19 @@ ACCESS_TOKEN_EXPIRATION = config('ACCESS_TOKEN_EXPIRATION')
 REFRESH_TOKEN_EXPIRATION = config('REFRESH_TOKEN_EXPIRATION')
 Sha = pbkdf2_sha256
 
-async def signin(db_session, input):
-    try:
-        user_on_db = await UserCommand.search_by_username(db_session, User(
-            username=input.username.lower()
-        ))
-    except Exception:
-        return None
+async def signup(db_session, input):
+    if not input.email and not input.username:
+        raise {'status_code': 400, 'detail': "Email or username must be provided."}
 
-    if not Sha.verify(input.password, user_on_db.password):
-        return False
+    user_on_db = await UserCommand.register(db_session, User(
+        email=input.email,
+        username=input.username.lower() if input.username else None,
+        password=Sha.hash(input.password),
+        full_name=input.full_name,
+        birthday=input.birthday
 
+    ))
+    
     access_exp = datetime.datetime.now(datetime.UTC) + datetime.timedelta(minutes=int(ACCESS_TOKEN_EXPIRATION))
 
     payload = {

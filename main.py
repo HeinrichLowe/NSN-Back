@@ -2,7 +2,7 @@ import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-from src.http.routes import UserRoute, PostRoute
+from src.presentation.routes import UserRoute, PostRoute
 
 app = FastAPI()
 

@@ -1,10 +1,10 @@
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
-from repositories import UserCommand
-from models.migrations import User
+#from repositories import UserCommand
+#from models.migrations import User
 import jwt
 from decouple import config
-from db.connect import DependsConnection as db_session
+#from db.connect import DependsConnection as db_session
 
 SECRET_KEY = config('SECRET_KEY')
 ALGORITHM = config('ALGORITHM')

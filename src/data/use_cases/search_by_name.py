@@ -1,10 +1,10 @@
 from typing import List, Dict
 import re
-from src.domain.use_cases.find_by_name import IFindByName
+from src.domain.use_cases.search_by_name import ISearchByName
 from src.data.interfaces.user_repository import IUserRepository
 from src.domain.entities.user import User
 
-class FindByName(IFindByName):
+class SearchByName(ISearchByName):
     def __init__(self, user_repository: IUserRepository):
         self.__user_repository = user_repository
 

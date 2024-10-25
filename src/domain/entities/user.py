@@ -4,15 +4,15 @@ from sqlalchemy import TIMESTAMP, UUID
 class User:
     def __init__(
             self,
-            id: UUID, # pylint: disable=redefined-builtin
-            email: str,
-            username: str,
-            password: str,
-            full_name: str,
-            avatar: str,
-            birthday: date,
-            created_at: TIMESTAMP,
-            deleted_at: TIMESTAMP
+            id: UUID = None, # pylint: disable=redefined-builtin
+            email: str = None,
+            username: str = None,
+            password: str = None,
+            full_name: str = None,
+            avatar: str = None,
+            birthday: date = None,
+            created_at: TIMESTAMP = None,
+            deleted_at: TIMESTAMP = None
         ) -> None:
         self.id = id
         self.email = email

@@ -1,5 +1,5 @@
-from repositories.user import UserCommand
-from models.migrations import User
+#from repositories.user import UserCommand
+#from models.migrations import User
 from passlib.hash import pbkdf2_sha256
 from decouple import config
 import datetime
