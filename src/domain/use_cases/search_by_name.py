@@ -3,5 +3,5 @@ from typing import List
 
 class ISearchByName(ABC):
     @abstractmethod
-    def find(self, name: str) -> List:
+    async def find(self, name: str) -> List:
         pass

@@ -1,12 +1,21 @@
 from fastapi import APIRouter, Depends, Request, status
 from fastapi.responses import JSONResponse
-import controllers.users as UserCtrl
-from .schemas import *
-from db import *
+import json
+from src.main.adapters.request_adapter import request_adapter
+from src.main.composers.register_composer import register_composer
+from src.main.composers.search_by_name_composer import search_by_name_composer
+#import controllers.users as UserCtrl
+from src.main.routes.users.schemas import BodySchema
+#from db import *
 
 router = APIRouter()
 
-@router.post("/signup")
+@router.post('/register')
+def register():
+    http_response = request_adapter(Request, register_composer())
+    return JSONResponse(http_response.body, http_response.status_code)
+
+"""@router.post("/signup")
 async def signup(input: SignupRequest, db_session = DependsConnection) -> SignupResponse:
     try:
         user_id = await UserCtrl.signup(db_session, input)
@@ -50,13 +59,22 @@ async def signin(input: SigninRequest, db_session = DependsConnection) -> Signin
         return JSONResponse(
             content={'detail': e.args},
             status_code=status.HTTP_400_BAD_REQUEST
-        )
+        )"""
 
-@router.get('/test')
-def test(db_session = DependsConnection):
-    return 'its works'
+@router.get('/ping')
+def test():
+    return 'pong: its works'
 
-@router.get('/user')
+@router.get('/search-by-users')
+async def search_by_name(request: Request) -> BodySchema:
+    http_response = await request_adapter(request, search_by_name_composer())
+    print("\n\nResponse: >>> ", vars(http_response), " <<< \n\nEnd-Response.")
+    return JSONResponse(
+        content=http_response.body,
+        status_code=http_response.status_code
+    )
+
+"""@router.get('/user')
 async def home(access_token: Depends = Depends(UserCtrl.verify_token), db_session = DependsConnection) -> UserResponse:
     username = access_token['sub']['username']
     user = await UserCtrl.session(username, db_session)
@@ -74,7 +92,7 @@ async def refreshToken(refresh_token: Depends = Depends(UserCtrl.verify_token), 
     return JSONResponse(
         content= user,
         status_code=status.HTTP_200_OK
-    )
+    )"""
 
 """@router.post("/signup")
 async def signup(input: SignupRequest = Depends(), db_session = DependsConnection) -> SignupResponse:

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, Request, HTTPException, status
-from controllers import posts
-from db import *
+"""from controllers import posts
+from db import *"""
 
 router = APIRouter()
 

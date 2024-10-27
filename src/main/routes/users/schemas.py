@@ -1,7 +1,8 @@
 from pydantic import BaseModel, Field, field_validator
+from sqlalchemy import TIMESTAMP
 from uuid import UUID
-from datetime import datetime
-from typing import Optional
+from datetime import datetime, date
+from typing import Optional, List
 
 class SignupRequest(BaseModel):
     email: Optional[str] = Field(description="email do usuario")
@@ -15,8 +16,8 @@ class SignupRequest(BaseModel):
     def valid_bithday(cls, raw):
         date = datetime.strptime(raw, "%Y-%m-%d")
         return date
-    
-    def check_email_or_username(cls, values):
+
+    def check_email_or_username(self, values):
         email, username = values.get('email'), values.get('username')
         if not email and not username:
             raise ValueError("Email ou username deve ser fornecido.")
@@ -45,3 +46,16 @@ class UserResponse(BaseModel):
     access_token: str = Field(description="token de accesso gerado")
     refresh_token: str = Field(description="token para refresh da autenticacao")
     expires_in: int = Field(description="tempo de duração do token")"""
+
+class AttributesSchema(BaseModel):
+    id: UUID
+    email: str | None
+    username: str | None
+    password: str
+    full_name: str
+    avatar: str | None
+
+class BodySchema(BaseModel):
+    type: str
+    count: int
+    attributes: List[AttributesSchema]

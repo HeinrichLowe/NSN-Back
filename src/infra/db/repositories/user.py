@@ -69,7 +69,7 @@ class UserRepository(IUserRepository):
             try:
                 sql = select(User).where(User.username == username, User.deleted_at.is_(None))
                 result = await session.execute(sql)
-                return result.scalar_one_or_none()
+                return result.scalars()
 
             except Exception as err:
                 await session.rollback()

@@ -6,10 +6,10 @@ class SearchByNameController(IController):
     def __init__(self, use_case: ISearchByName) -> None:
         self.__use_case = use_case
 
-    def handle(self, http_request: HttpRequest) -> HttpResponse:
+    async def handle(self, http_request: HttpRequest) -> HttpResponse:
         name = http_request.query_params["name"]
 
-        response = self.__use_case.find(name)
+        response = await self.__use_case.find(name)
 
         return  HttpResponse(
             status_code=200,
