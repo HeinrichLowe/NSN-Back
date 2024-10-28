@@ -1,4 +1,4 @@
-#from datetime import datetime
+from datetime import datetime
 from typing import List
 from sqlalchemy import insert, select#, update, delete, func
 from src.infra.db.settings.connection import Connection
@@ -15,13 +15,13 @@ class UserRepository(IUserRepository):
     async def register(self, user: User) -> UserEntity:
         async with Connection() as session:
             try:
-                sql = insert(user.__class__).\
+                sql = insert(User).\
                     values(
                         email=user.email,
                         username=user.username,
                         password=user.password,
                         full_name=user.full_name,
-                        birthday= user.birthday
+                        birthday=user.birthday
                 ).\
                     returning(User)
 
@@ -69,7 +69,7 @@ class UserRepository(IUserRepository):
             try:
                 sql = select(User).where(User.username == username, User.deleted_at.is_(None))
                 result = await session.execute(sql)
-                return result.scalars()
+                return result.scalars().first()
 
             except Exception as err:
                 await session.rollback()

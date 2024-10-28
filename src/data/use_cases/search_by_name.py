@@ -1,9 +1,9 @@
 from typing import List, Dict
 import re
-import uuid
 from src.domain.use_cases.search_by_name import ISearchByName
 from src.data.interfaces.user_repository import IUserRepository
 from src.domain.entities.user import User
+from src.errors.types import HttpBadRequestError
 
 class SearchByName(ISearchByName):
     def __init__(self, user_repository: IUserRepository):
@@ -17,15 +17,15 @@ class SearchByName(ISearchByName):
     @classmethod
     def __validate_name(cls, name: str) -> None:
         if not re.match("^[a-zA-Z ]+$", name):
-            raise Exception('Invalid name.')
+            raise HttpBadRequestError('Invalid name.')
 
         if len(name) > 32:
-            raise Exception('Name to long.')
+            raise HttpBadRequestError('Name to long.')
 
     async def __search_user(self, name: str) -> List[User]:
         users = await self.__user_repository.search_by_name(name)
         if users == []:
-            raise Exception('User not found.')
+            raise HttpBadRequestError('User not found.')
         return users
 
     @classmethod

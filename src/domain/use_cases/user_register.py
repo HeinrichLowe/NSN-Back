@@ -4,5 +4,5 @@ from src.domain.entities.user import User
 
 class IUserRegister(ABC):
     @abstractmethod
-    def register(self, user: User) -> Dict:
+    async def register(self, user: User) -> Dict:
         pass

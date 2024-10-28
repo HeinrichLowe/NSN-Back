@@ -1,18 +1,25 @@
-from fastapi import APIRouter, Depends, Request, status
+#pylint: disable = broad-exception-caught
+from fastapi import APIRouter, Depends, Request
 from fastapi.responses import JSONResponse
-import json
+from src.errors.error_handler import handle_errors
 from src.main.adapters.request_adapter import request_adapter
 from src.main.composers.register_composer import register_composer
 from src.main.composers.search_by_name_composer import search_by_name_composer
-#import controllers.users as UserCtrl
-from src.main.routes.users.schemas import BodySchema
-#from db import *
+from src.presentation.schemas.user_schemas import SignupRequest, SignupResponse, SearchByNameRequest, SearchByNameResponse
 
 router = APIRouter()
 
-@router.post('/register')
-def register():
-    http_response = request_adapter(Request, register_composer())
+@router.get('/ping')
+def test():
+    return 'pong: its works'
+
+@router.post('/signup')
+async def register(request: Request) -> SignupResponse:
+    http_response = None
+    try:
+        http_response = await request_adapter(request, register_composer(), SignupRequest)
+    except Exception as err:
+        http_response = handle_errors(err)
     return JSONResponse(http_response.body, http_response.status_code)
 
 """@router.post("/signup")
@@ -61,18 +68,14 @@ async def signin(input: SigninRequest, db_session = DependsConnection) -> Signin
             status_code=status.HTTP_400_BAD_REQUEST
         )"""
 
-@router.get('/ping')
-def test():
-    return 'pong: its works'
-
 @router.get('/search-by-users')
-async def search_by_name(request: Request) -> BodySchema:
-    http_response = await request_adapter(request, search_by_name_composer())
-    print("\n\nResponse: >>> ", vars(http_response), " <<< \n\nEnd-Response.")
-    return JSONResponse(
-        content=http_response.body,
-        status_code=http_response.status_code
-    )
+async def search_by_name(request: Request) -> SearchByNameResponse:
+    http_response = None
+    try:
+        http_response = await request_adapter(request, search_by_name_composer(), SearchByNameRequest)
+    except Exception as err:
+        http_response = handle_errors(err)
+    return JSONResponse(http_response.body, http_response.status_code)
 
 """@router.get('/user')
 async def home(access_token: Depends = Depends(UserCtrl.verify_token), db_session = DependsConnection) -> UserResponse:

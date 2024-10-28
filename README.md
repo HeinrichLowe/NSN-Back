@@ -34,4 +34,12 @@ python main.py
 
 - Or just press 'F5' and select 'FastAPI' to launch and debug a FastAPI web application.
 
-You can open [http://localhost:8000/test](http://localhost:8000/test) to verify if the server started correctly.
+You can open [http://localhost:8000/ping](http://localhost:8000/ping) to verify if the server started correctly.
+
+## Please note
+
+It is within my knowledge that 'dead code' (commented-out, unnecessary code) exists; it is there solely to guide and assist me with future updates.
+
+However, as the code is updated and that assistance is no longer needed, this 'dead code' will obviously be removed accordingly.
+
+Thank you for your understanding.

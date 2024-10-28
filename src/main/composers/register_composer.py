@@ -7,4 +7,4 @@ def register_composer():
     use_case = UserRegister(repository)
     controller = RegisterController(use_case)
 
-    return controller.handle
+    return controller

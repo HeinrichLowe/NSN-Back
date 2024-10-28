@@ -15,15 +15,15 @@ class RegisterController(IController):
     def __init__(self, use_case: IUserRegister) -> None:
         self.__use_case = use_case
 
-    def handle(self, http_request: HttpRequest) -> HttpResponse:
+    async def handle(self, http_request: HttpRequest) -> HttpResponse:
         request = http_request.body
 
-        response = self.__use_case.register(User(
-            email=request["user"]["email"],
-            username=request["user"]["username"].lower() if request["user"]["username"] else None,
-            password=Sha.hash(request["user"]["password"]),
-            full_name=request["user"]["full_name"],
-            birthday=request["user"]["birthday"]
+        response = await self.__use_case.register(User(
+            email=request["email"],
+            username=request["username"].lower() if request["username"] else None,
+            password=Sha.hash(request["password"]),
+            full_name=request["full_name"],
+            birthday=request["birthday"]
         ))
 
         return  HttpResponse(
