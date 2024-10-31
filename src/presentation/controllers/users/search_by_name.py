@@ -1,5 +1,5 @@
 from src.presentation.interfaces.controller_interface import IController
-from src.domain.use_cases.search_by_name import ISearchByName
+from src.domain.use_cases.user.search_by_name import ISearchByName
 from src.presentation.http_types import HttpRequest, HttpResponse
 
 class SearchByNameController(IController):

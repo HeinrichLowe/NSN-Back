@@ -1,5 +1,5 @@
 from src.infra.db.repositories import UserRepository
-from src.data.use_cases.search_by_name import SearchByName
+from src.data.use_cases.user.search_by_name import SearchByName
 from src.presentation.controllers.users.search_by_name import SearchByNameController
 
 def search_by_name_composer():

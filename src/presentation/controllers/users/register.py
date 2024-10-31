@@ -1,7 +1,7 @@
 from passlib.hash import pbkdf2_sha256
 from decouple import config
 from src.presentation.interfaces.controller_interface import IController
-from src.domain.use_cases.user_register import IUserRegister
+from src.domain.use_cases.user.user_register import IUserRegister
 from src.domain.entities.user import User
 from src.presentation.http_types import HttpRequest, HttpResponse
 

@@ -1,6 +1,6 @@
 from typing import List, Dict
 import re
-from src.domain.use_cases.search_by_name import ISearchByName
+from src.domain.use_cases.user.search_by_name import ISearchByName
 from src.data.interfaces.user_repository import IUserRepository
 from src.domain.entities.user import User
 from src.errors.types import HttpBadRequestError

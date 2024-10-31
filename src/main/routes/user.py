@@ -3,8 +3,8 @@ from fastapi import APIRouter, Depends, Request
 from fastapi.responses import JSONResponse
 from src.errors.error_handler import handle_errors
 from src.main.adapters.request_adapter import request_adapter
-from src.main.composers.register_composer import register_composer
-from src.main.composers.search_by_name_composer import search_by_name_composer
+from src.main.composers.user.register_composer import register_composer
+from src.main.composers.user.search_by_name_composer import search_by_name_composer
 from src.presentation.schemas.user_schemas import SignupRequest, SignupResponse, SearchByNameRequest, SearchByNameResponse
 
 router = APIRouter()

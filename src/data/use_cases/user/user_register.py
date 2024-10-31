@@ -1,13 +1,15 @@
 from typing import Dict
 import re
-from src.domain.use_cases.user_register import IUserRegister
 from src.domain.entities.user import User
+from src.domain.use_cases.user.user_register import IUserRegister
+from src.domain.use_cases.user.token_generator import ITokenGenerator
 from src.data.interfaces.user_repository import IUserRepository
 from src.errors.types import HttpBadRequestError
 
 class UserRegister(IUserRegister):
-    def __init__(self, repository: IUserRepository):
+    def __init__(self, repository: IUserRepository, token_generator: ITokenGenerator):
         self.__repository = repository
+        self.__token_generator = token_generator
 
     async def register(self, user: User) -> Dict:
         self.__validate_name(user.full_name)
@@ -15,7 +17,8 @@ class UserRegister(IUserRegister):
         await self.__checks_for_duplicate_username(user.username)
 
         response = await self.__registry_user_info(user)
-        return self.__format_response(response)
+        tokens = await self.__token_generator.create_tokens(response)
+        return self.__format_response(tokens)
 
     async def __checks_for_duplicate_username(self, username: str):
         response = await self.__repository.search_by_username(username)
@@ -42,14 +45,14 @@ class UserRegister(IUserRegister):
         return await self.__repository.register(user)
 
     @classmethod
-    def __format_response(cls, user: User) -> Dict:
-        count = len(user) if isinstance(user, list) else 1
+    def __format_response(cls, tokens: Dict) -> Dict:
+        count = len(tokens) if isinstance(tokens, list) else 1
 
         response = {
             "type": "User",
             "count": count,
             "attributes": {
-                "id": str(user.id)
+                **tokens
             }
         }
 

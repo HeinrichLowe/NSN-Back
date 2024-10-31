@@ -1,5 +1,5 @@
 from typing import Dict
-from src.domain.use_cases.find_by_username import IFindByUsername
+from src.domain.use_cases.user.find_by_username import IFindByUsername
 from src.data.interfaces.user_repository import IUserRepository
 
 class FindByUsername(IFindByUsername):
