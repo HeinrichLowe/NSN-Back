@@ -8,6 +8,7 @@ class UserRepositorySpy:
         self.register_attributes = {}
         self.search_by_username_attributes = {}
         self.search_by_name_attributes = {}
+        self.signin_attributes = {}
 
     def get_all(self) -> List[UserEntity]:
         pass
@@ -21,6 +22,14 @@ class UserRepositorySpy:
         return self.search_by_username_attributes
 
     def search_by_name(self, name: str) -> List[UserEntity]:
+        self.search_by_name_attributes["name"] = name
+        return [
+            User(username = 'test_97', full_name = 'Test_Terayotabite', password = 'testing123'),
+            User(username = 'test_98', full_name = 'Test_Pentayotabite', password = 'testing123'),
+            User(username = 'test_99', full_name = 'Test_Hexayotabite', password = 'testing123')
+        ]
+    
+    def signin(self, name: str) -> List[UserEntity]:
         self.search_by_name_attributes["name"] = name
         return [
             User(username = 'test_97', full_name = 'Test_Terayotabite', password = 'testing123'),

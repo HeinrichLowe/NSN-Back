@@ -1,4 +1,4 @@
-from datetime import datetime
+#from datetime import datetime
 from typing import List
 from sqlalchemy import insert, select#, update, delete, func
 from src.infra.db.settings.connection import Connection
@@ -51,26 +51,31 @@ class UserRepository(IUserRepository):
                 User.deleted_at is None
             )
             result = await conn.execute(sql)
-            return result.scalars().one()
+            return result.scalars().one()"""
 
-    async def search_by_credentials(self, db_session: AsyncSession, credentials: User) -> User:
-        async with db_session() as conn:
-            sql = select(User).where(
-                User.username == credentials.username,
-                User.password == credentials.password,
-                User.deleted_at is None
-            )
-            result = await conn.execute(sql)
-            return result.scalars().one()
-    """
-
-    async def search_by_username(self, username: str) -> UserEntity:
+    async def search_by_username(self, credentials: User) -> User:
         async with Connection() as session:
             try:
-                sql = select(User).where(User.username == username, User.deleted_at.is_(None))
+                sql = select(User).where(
+                    User.username == credentials.username,
+                    User.deleted_at.is_(None)
+                )
                 result = await session.execute(sql)
                 return result.scalars().first()
 
+            except Exception as err:
+                await session.rollback()
+                raise err
+
+    async def search_by_email(self, credentials: User) -> User:
+        async with Connection() as session:
+            try:
+                sql = select(User).where(
+                    User.email == credentials.email,
+                    User.deleted_at.is_(None)
+                )
+                result = await session.execute(sql)
+                return result.scalars().first()
             except Exception as err:
                 await session.rollback()
                 raise err

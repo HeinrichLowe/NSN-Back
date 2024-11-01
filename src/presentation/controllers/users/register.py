@@ -27,6 +27,6 @@ class RegisterController(IController):
         ))
 
         return  HttpResponse(
-            status_code=200,
+            status_code=201,
             body={ "data": response }
         )

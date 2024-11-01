@@ -30,6 +30,22 @@ async def test_register():
 
 @pytest.mark.skip(reason="Database dependent testing")
 @pytest.mark.asyncio
+async def test_signin_with_username():
+    mocked_user = User(username = 'test_19', full_name = 'Test_Teta', password = 'testing123')
+
+    async with Connection() as session:
+        await session.execute(insert(User).values(username=mocked_user.username, full_name=mocked_user.full_name, password=mocked_user.password))
+        await session.commit()
+
+        user_repository = UserRepository()
+        response = await user_repository.search_by_username(mocked_user)
+
+        await session.execute(delete(User).where(User.id==response.id))
+        await session.commit()
+
+
+@pytest.mark.skip(reason="Database dependent testing")
+@pytest.mark.asyncio
 async def test_search_by_username():
     mocked_user = User(username = 'test_19', full_name = 'Test_Teta', password = 'testing123')
 

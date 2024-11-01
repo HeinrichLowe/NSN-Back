@@ -1,5 +1,5 @@
 from .exceptions import UserDuplicatedException, UserNotFound
-from .signin import signin
+from .signin import SigninController
 from .signup import signup
 from .verify_token import verify_token
 from .refresh_token import refresh_token

@@ -1,14 +1,15 @@
 from uuid import UUID
 from datetime import datetime
 from typing import List
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
+from src.errors.types import HttpBadRequestError
 
 # ----------------------- Signup Schemas -----------------------
 class SignupRequest(BaseModel):
     email: str | None = Field(description="email do usuario")
-    username: str | None = Field(min_length=3, max_length=32, description="nome do usuario para realizar o login")
-    password: str = Field(min_length=6, max_length=64, description="password do usuario para realizar o login")
-    full_name: str = Field(max_length=128, description="nome completo (ou não) do usário")
+    username: str | None = Field(description="nome do usuario para realizar o login")
+    password: str = Field(description="password do usuario para realizar o login")
+    full_name: str = Field(description="nome completo (ou não) do usário")
     birthday: str = Field(description="data de nascimento do usário. Ex: 01-01-1999")
     avatar: str | None = Field(description="Profile picture")
 
@@ -18,11 +19,33 @@ class SignupRequest(BaseModel):
         date = datetime.strptime(raw, "%Y-%m-%d")
         return date
 
-    def check_email_or_username(self, values):
-        email, username = values.get('email'), values.get('username')
-        if not email and not username:
-            raise ValueError("Email ou username deve ser fornecido.")
-        return values
+    @model_validator(mode='after')
+    def validate_login_method(self) -> 'SignupRequest':
+        if not self.email and not self.username:
+            raise HttpBadRequestError("Email or username is required")
+
+        if not self.password:
+            raise HttpBadRequestError("Password is required")
+
+        if not self.full_name:
+            raise HttpBadRequestError("Name is required")
+
+        if len(self.username) > 32:
+            raise HttpBadRequestError("Username too long")
+
+        if len(self.username) < 3:
+            raise HttpBadRequestError("Username too short")
+
+        if len(self.password) > 64:
+            raise HttpBadRequestError("Password too long")
+
+        if len(self.password) < 6:
+            raise HttpBadRequestError("Password too short")
+
+        if len(self.full_name) > 128:
+            raise HttpBadRequestError("Name too long")
+
+        return self
 
 class SignupAttributes(BaseModel):
     id: UUID | str = Field(description="ID único do usuário")
@@ -35,8 +58,19 @@ class SignupResponse(BaseModel):
 
 # ----------------------- Signin Schemas -----------------------
 class SigninRequest(BaseModel):
-    username: str = Field(description="username do usuairo")
-    password: str = Field(description="senha do usuario")
+    email: str | None = Field(description="User Email")
+    username: str | None = Field(description="User Username")
+    password: str | None = Field(description="User password")
+
+    @model_validator(mode='after')
+    def validate_login_method(self) -> 'SigninRequest':
+        if not self.email and not self.username:
+            raise HttpBadRequestError("Email or username is required")
+
+        if not self.password:
+            raise HttpBadRequestError("Password is required")
+
+        return self
 
 #class SigninResponse(BaseModel):
 #    access_token: str = Field(description="Generated access token")

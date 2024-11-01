@@ -18,13 +18,14 @@ class IUserRepository(ABC):
 
     async def search_by_id(self, db_session: AsyncSession, credentials: User) -> User:
         pass
-
-    async def search_by_credentials(self, db_session: AsyncSession, credentials: User) -> User:
-        pass
     """
 
     @abstractmethod
-    async def search_by_username(self, username: str) -> UserEntity:
+    async def search_by_username(self, credentials: UserEntity) -> UserEntity:
+        pass
+
+    @abstractmethod
+    async def search_by_email(self, credentials: UserEntity) -> UserEntity:
         pass
 
     """
