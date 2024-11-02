@@ -9,17 +9,23 @@ class User:
             username: str = None,
             password: str = None,
             full_name: str = None,
+            phone_number: str = None,
+            bio: str = None,
             avatar: str = None,
-            birthday: date = None,
+            birth_date: date = None,
             created_at: TIMESTAMP = None,
-            deleted_at: TIMESTAMP = None
+            deleted_at: TIMESTAMP = None,
+            is_active: bool = False
         ) -> None:
         self.id = id
         self.email = email
         self.username = username
         self.password = password
         self.full_name = full_name
+        self.phone_number = phone_number
+        self.bio = bio
         self.avatar = avatar
-        self.birthday = birthday
+        self.birth_date = birth_date
         self.created_at = created_at
         self.deleted_at = deleted_at
+        self.is_active = is_active

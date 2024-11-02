@@ -34,12 +34,12 @@ class Signin(ISignIn):
 
     async def __search_user(self, credentials: User) -> User:
         if credentials.username:
-            user = await self.user_repository.search_by_username(credentials)
+            user = await self.user_repository.search_by_username(credentials.username)
             if not user:
                 raise HttpUnauthorizedError("Invalid credentials")
             return user
         if credentials.email:
-            user = await self.user_repository.search_by_email(credentials)
+            user = await self.user_repository.search_by_email(credentials.email)
             if not user:
                 raise HttpUnauthorizedError("Invalid credentials")
             return user

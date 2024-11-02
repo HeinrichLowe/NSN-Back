@@ -60,7 +60,7 @@ class TokenGenerator(ITokenGenerator):
         except Exception as err:
             raise HttpUnauthorizedError(f"Erro na verificação do token: {str(err)}") from err
 
-    async def create_tokens(self, user_data: Dict) -> Dict:
+    async def create_tokens(self, user_data: User) -> Dict:
         access_token = await self.__generate_access_token(user_data)
         refresh_token = await self.__generate_refresh_token(user_data)
 

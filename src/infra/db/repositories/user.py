@@ -21,7 +21,7 @@ class UserRepository(IUserRepository):
                         username=user.username,
                         password=user.password,
                         full_name=user.full_name,
-                        birthday=user.birthday
+                        birth_date=user.birth_date
                 ).\
                     returning(User)
 
@@ -53,11 +53,11 @@ class UserRepository(IUserRepository):
             result = await conn.execute(sql)
             return result.scalars().one()"""
 
-    async def search_by_username(self, credentials: User) -> User:
+    async def search_by_username(self, username: str) -> User:
         async with Connection() as session:
             try:
                 sql = select(User).where(
-                    User.username == credentials.username,
+                    User.username == username,
                     User.deleted_at.is_(None)
                 )
                 result = await session.execute(sql)
@@ -67,11 +67,11 @@ class UserRepository(IUserRepository):
                 await session.rollback()
                 raise err
 
-    async def search_by_email(self, credentials: User) -> User:
+    async def search_by_email(self, email: str) -> User:
         async with Connection() as session:
             try:
                 sql = select(User).where(
-                    User.email == credentials.email,
+                    User.email == email,
                     User.deleted_at.is_(None)
                 )
                 result = await session.execute(sql)

@@ -23,7 +23,7 @@ class RegisterController(IController):
             username=request["username"].lower() if request["username"] else None,
             password=Sha.hash(request["password"]),
             full_name=request["full_name"],
-            birthday=request["birthday"]
+            birth_date=request["birth_date"]
         ))
 
         return  HttpResponse(

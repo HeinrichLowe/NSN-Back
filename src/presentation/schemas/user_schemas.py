@@ -10,14 +10,18 @@ class SignupRequest(BaseModel):
     username: str | None = Field(description="nome do usuario para realizar o login")
     password: str = Field(description="password do usuario para realizar o login")
     full_name: str = Field(description="nome completo (ou não) do usário")
-    birthday: str = Field(description="data de nascimento do usário. Ex: 01-01-1999")
-    avatar: str | None = Field(description="Profile picture")
+    birth_date: datetime = Field(description="data de nascimento do usário. Ex: 01-01-1999")
 
-    @field_validator("birthday")
+    @field_validator("birth_date")
     @classmethod
-    def valid_bithday(cls, raw):
-        date = datetime.strptime(raw, "%Y-%m-%d")
-        return date
+    def valid_bithday(cls, raw: str | datetime) -> datetime:
+        if isinstance(raw, datetime):
+            return raw
+
+        try:
+            return datetime.strptime(raw, "%Y-%m-%d")
+        except ValueError as exc:
+            raise HttpBadRequestError("Formato de data inválido. Use YYYY-MM-DD") from exc
 
     @model_validator(mode='after')
     def validate_login_method(self) -> 'SignupRequest':
