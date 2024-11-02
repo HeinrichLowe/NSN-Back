@@ -1,4 +1,5 @@
 from typing import Dict
+from passlib.hash import pbkdf2_sha256 as Sha
 import re
 from src.domain.entities.user import User
 from src.domain.use_cases.user.signup import ISignup
@@ -15,6 +16,8 @@ class Signup(ISignup):
         self.__validate_name(user.full_name)
         self.__validate_username(user.username)
         await self.__checks_for_duplicate_username(user.username)
+
+        user.password = Sha.hash(user.password)
 
         response = await self.__registry_user_info(user)
         tokens = await self.__token_generator.create_tokens(response)
