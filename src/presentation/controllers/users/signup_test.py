@@ -1,4 +1,4 @@
-from src.presentation.controllers.users.register import RegisterController
+from src.presentation.controllers.users.signup import SignupController
 from src.data.tests.register_spy import RegisterSpy
 from src.presentation.http_types.http_response import HttpResponse
 
@@ -18,7 +18,7 @@ class HttpRequestMock():
 def test_handle():
     http_request_mock = HttpRequestMock()
     use_case = RegisterSpy()
-    search_by_name = RegisterController(use_case)
+    search_by_name = SignupController(use_case)
 
     response = search_by_name.handle(http_request_mock)
 

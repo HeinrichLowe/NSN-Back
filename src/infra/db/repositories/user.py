@@ -12,7 +12,7 @@ class UserRepository(IUserRepository):
             result =  await session.execute(select(User))
             return result.all()
 
-    async def register(self, user: User) -> UserEntity:
+    async def signup(self, user: User) -> UserEntity:
         async with Connection() as session:
             try:
                 sql = insert(User).\

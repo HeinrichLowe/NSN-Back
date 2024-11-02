@@ -1,9 +1,9 @@
-import datetime
-#from repositories.user import UserCommand
-#from models.migrations import User
 from passlib.hash import pbkdf2_sha256
-import jwt
 from decouple import config
+from src.presentation.interfaces.controller_interface import IController
+from src.domain.use_cases.user.signup import ISignup
+from src.domain.entities.user import User
+from src.presentation.http_types import HttpRequest, HttpResponse
 
 SECRET_KEY = config('SECRET_KEY')
 ALGORITHM = config('ALGORITHM')
@@ -11,45 +11,22 @@ ACCESS_TOKEN_EXPIRATION = config('ACCESS_TOKEN_EXPIRATION')
 REFRESH_TOKEN_EXPIRATION = config('REFRESH_TOKEN_EXPIRATION')
 Sha = pbkdf2_sha256
 
-async def signup(db_session, input):
-    if not input.email and not input.username:
-        raise {'status_code': 400, 'detail': "Email or username must be provided."}
+class SignupController(IController):
+    def __init__(self, use_case: ISignup) -> None:
+        self.__use_case = use_case
 
-    user_on_db = await UserCommand.register(db_session, User(
-        email=input.email,
-        username=input.username.lower() if input.username else None,
-        password=Sha.hash(input.password),
-        full_name=input.full_name,
-        birthday=input.birthday
+    async def handle(self, http_request: HttpRequest) -> HttpResponse:
+        request = http_request.body
 
-    ))
-    
-    access_exp = datetime.datetime.now(datetime.UTC) + datetime.timedelta(minutes=int(ACCESS_TOKEN_EXPIRATION))
+        response = await self.__use_case.execute(User(
+            email=request["email"],
+            username=request["username"].lower() if request["username"] else None,
+            password=Sha.hash(request["password"]),
+            full_name=request["full_name"],
+            birth_date=request["birth_date"]
+        ))
 
-    payload = {
-        'sub': {
-            "username": input.username,
-            "user_id": user_on_db.id.hex
-        },
-        'exp': access_exp
-    }
-
-    access_token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
-
-    refresh_exp = datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=int(REFRESH_TOKEN_EXPIRATION))
-
-    payload = {
-        'sub': {
-            "user_id": user_on_db.id.hex
-        },
-        'exp': refresh_exp
-    }
-
-    refresh_token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
-
-    return {
-        'access_token': access_token,
-        'access_exp': access_exp.isoformat(),
-        'refresh_token': refresh_token,
-        'refresh_exp': refresh_exp.isoformat()
-    }
+        return  HttpResponse(
+            status_code=201,
+            body={ "data": response }
+        )

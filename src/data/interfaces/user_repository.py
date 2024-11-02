@@ -9,7 +9,7 @@ class IUserRepository(ABC):
         pass
 
     @abstractmethod
-    async def register(self, user: UserEntity) -> UserEntity:
+    async def signup(self, user: UserEntity) -> UserEntity:
         pass
 
     """

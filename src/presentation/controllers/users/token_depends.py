@@ -1,3 +1,7 @@
+# Just a example if i need in the future
+# Most probably i will delete this file soon
+
+
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 #from repositories import UserCommand

@@ -1,12 +1,12 @@
 from src.infra.db.tests.user_repository import UserRepositorySpy
 from src.infra.db.models.user import User
-from .user_register import UserRegister
+from .signup import Signup
 
 def test_register():
     mocked_user = User(username = 'test_21', full_name = 'Test Sigma', password = 'testing123')
 
     repo = UserRepositorySpy()
-    user_register = UserRegister(repo)
+    user_register = Signup(repo)
 
     response = user_register.register(mocked_user)
 
@@ -22,7 +22,7 @@ def test_register_invalid_name_error():
     mocked_user = User(username = 'test_21', full_name = 'Test Sigma_123', password = 'testing123')
 
     repo = UserRepositorySpy()
-    user_register = UserRegister(repo)
+    user_register = Signup(repo)
 
     try:
         user_register.register(mocked_user)
@@ -35,7 +35,7 @@ def test_register_invalid_username():
     mocked_user = User(username = 'test 21', full_name = 'Test Sigma', password = 'testing123')
 
     repo = UserRepositorySpy()
-    user_register = UserRegister(repo)
+    user_register = Signup(repo)
 
     try:
         user_register.register(mocked_user)
@@ -48,7 +48,7 @@ def test_register_to_long_username():
     mocked_user = User(username = 'test_24_7_every_day_every_mount', full_name = 'Test Sigma', password = 'testing123')
 
     repo = UserRepositorySpy()
-    user_register = UserRegister(repo)
+    user_register = Signup(repo)
 
     try:
         user_register.register(mocked_user)

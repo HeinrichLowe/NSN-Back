@@ -10,7 +10,7 @@ async def test_register():
     mocked_user = User(username = 'test_18', full_name = 'Test_Teta', password = 'testing123')
 
     user_repository = UserRepository()
-    await user_repository.register(mocked_user)
+    await user_repository.signup(mocked_user)
 
     sql = select(User).where(
         User.username == mocked_user.username,

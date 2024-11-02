@@ -1,9 +1,9 @@
 #pylint: disable = broad-exception-caught
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 from src.errors.error_handler import handle_errors
 from src.main.adapters.request_adapter import request_adapter
-from src.main.composers.user import register_composer, signin_composer
+from src.main.composers.user import signup_composer, signin_composer
 from src.main.composers.user.search_by_name_composer import search_by_name_composer
 from src.presentation.schemas.user_schemas import SignupRequest, SignupResponse, SigninRequest, SearchByNameRequest, SearchByNameResponse
 
@@ -14,10 +14,10 @@ def test():
     return 'pong: its works'
 
 @router.post('/signup')
-async def register(request: Request) -> SignupResponse:
+async def signup(request: Request) -> SignupResponse:
     http_response = None
     try:
-        http_response = await request_adapter(request, register_composer(), SignupRequest)
+        http_response = await request_adapter(request, signup_composer(), SignupRequest)
     except Exception as err:
         http_response = handle_errors(err)
     return JSONResponse(http_response.body, http_response.status_code)
