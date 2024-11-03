@@ -16,10 +16,7 @@ class TokenGenerator(ITokenGenerator):
         access_exp = datetime.datetime.now(datetime.UTC) + datetime.timedelta(minutes=int(self.__access_token_expiration))
 
         payload = {
-            'sub': {
-                "username": user_data.username,
-                "user_id": str(user_data.id)
-            },
+            'sub': str(user_data.id),
             'exp': access_exp
         }
 
@@ -34,9 +31,7 @@ class TokenGenerator(ITokenGenerator):
         refresh_exp = datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=int(self.__refresh_token_expiration))
 
         payload = {
-            'sub': {
-                "user_id": str(user_data.id)
-            },
+            'sub': str(user_data.id),
             'exp': refresh_exp
         }
 

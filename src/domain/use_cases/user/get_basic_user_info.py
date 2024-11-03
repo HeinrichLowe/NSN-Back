@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Dict
 
-class IFindByUsername(ABC):
+class IGetBasicUserInfo(ABC):
     @abstractmethod
-    def find(self, username: str) -> Dict:
+    async def execute(self, user_id: str) -> Dict:
         pass

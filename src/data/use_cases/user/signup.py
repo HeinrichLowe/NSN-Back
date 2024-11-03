@@ -1,6 +1,6 @@
+import re
 from typing import Dict
 from passlib.hash import pbkdf2_sha256 as Sha
-import re
 from src.domain.entities.user import User
 from src.domain.use_cases.user.signup import ISignup
 from src.domain.use_cases.user.token_generator import ITokenGenerator
@@ -24,7 +24,7 @@ class Signup(ISignup):
         return self.__format_response(tokens)
 
     async def __checks_for_duplicate_username(self, username: str):
-        response = await self.__repository.search_by_username(username)
+        response = await self.__repository.find_by_username(username)
         if response is not None:
             raise HttpBadRequestError("User already exists.")
 
@@ -49,14 +49,4 @@ class Signup(ISignup):
 
     @classmethod
     def __format_response(cls, tokens: Dict) -> Dict:
-        count = len(tokens) if isinstance(tokens, list) else 1
-
-        response = {
-            "type": "User",
-            "count": count,
-            "attributes": {
-                **tokens
-            }
-        }
-
-        return response
+        return { **tokens }

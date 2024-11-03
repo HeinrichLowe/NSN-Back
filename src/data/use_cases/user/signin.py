@@ -34,12 +34,12 @@ class Signin(ISignIn):
 
     async def __search_user(self, credentials: User) -> User:
         if credentials.username:
-            user = await self.user_repository.search_by_username(credentials.username)
+            user = await self.user_repository.find_by_username(credentials.username)
             if not user:
                 raise HttpUnauthorizedError("Invalid credentials")
             return user
         if credentials.email:
-            user = await self.user_repository.search_by_email(credentials.email)
+            user = await self.user_repository.find_by_email(credentials.email)
             if not user:
                 raise HttpUnauthorizedError("Invalid credentials")
             return user
@@ -50,14 +50,4 @@ class Signin(ISignIn):
 
     @classmethod
     def __format_response(cls, tokens: Dict) -> Dict:
-        count = len(tokens) if isinstance(tokens, list) else 1
-
-        response = {
-            "type": "User",
-            "count": count,
-            "attributes": {
-                **tokens
-            }
-        }
-
-        return response
+        return { **tokens }

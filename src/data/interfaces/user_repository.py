@@ -14,18 +14,18 @@ class IUserRepository(ABC):
 
     """
     def update_inf(self, conn, user, params):
-        pass
-
-    async def search_by_id(self, db_session: AsyncSession, credentials: User) -> User:
-        pass
-    """
+        pass"""
 
     @abstractmethod
-    async def search_by_username(self, credentials: UserEntity) -> UserEntity:
+    async def find_by_id(self, user_id: str) -> UserEntity:
         pass
 
     @abstractmethod
-    async def search_by_email(self, credentials: UserEntity) -> UserEntity:
+    async def find_by_username(self, username: str) -> UserEntity:
+        pass
+
+    @abstractmethod
+    async def find_by_email(self, email: str) -> UserEntity:
         pass
 
     """
@@ -34,7 +34,7 @@ class IUserRepository(ABC):
     """
 
     @abstractmethod
-    async def search_by_name(self, name):
+    async def search_by_name(self, name: str) -> UserEntity:
         pass
 
     """

@@ -1,17 +1,37 @@
-#pylint: disable = broad-exception-caught
+# pylint: disable = broad-exception-caught
+
+# Third-party imports
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
+
+# Local imports
 from src.errors.error_handler import handle_errors
 from src.main.adapters.request_adapter import request_adapter
-from src.main.composers.user import signup_composer, signin_composer
-from src.main.composers.user.search_by_name_composer import search_by_name_composer
-from src.main.composers.user.verify_token_composer import verify_token_composer
-from src.presentation.schemas.user_schemas import SignupRequest, SignupResponse, SigninRequest, SearchByNameRequest, SearchByNameResponse
+
+# Composers
+from src.main.composers.user import (
+    signup_composer,
+    signin_composer,
+    search_by_name_composer,
+    get_basic_user_info_composer,
+    verify_token_composer
+)
+
+# Schemas
+from src.presentation.schemas.user_schemas import (
+    SignupRequest,
+    SignupResponse,
+    SigninRequest,
+    SigninResponse,
+    SearchByNameRequest,
+    SearchByNameResponse,
+    UserResponse
+)
 
 router = APIRouter()
 
 @router.get('/ping')
-def test():
+def ping():
     return 'pong: its works'
 
 @router.post('/signup')
@@ -24,7 +44,7 @@ async def signup(request: Request) -> SignupResponse:
     return JSONResponse(http_response.body, http_response.status_code)
 
 @router.post('/signin')
-async def signin(request: Request):
+async def signin(request: Request) -> SigninResponse:
     http_response = None
     try:
         http_response = await request_adapter(request, signin_composer(), SigninRequest)
@@ -41,17 +61,17 @@ async def search_by_name(request: Request) -> SearchByNameResponse:
         http_response = handle_errors(err)
     return JSONResponse(http_response.body, http_response.status_code)
 
-"""@router.get('/user')
-async def home(access_token: Depends = Depends(UserCtrl.verify_token), db_session = DependsConnection) -> UserResponse:
-    username = access_token['sub']['username']
-    user = await UserCtrl.session(username, db_session)
+@router.get('/user')
+async def user(request: Request) -> UserResponse:
+    try:
+        http_response = await request_adapter(request, verify_token_composer())
+        user_info = await get_basic_user_info_composer().handle(http_response.body["sub"])
+    except Exception as err:
+        http_response = handle_errors(err)
+        return JSONResponse(http_response.body, http_response.status_code)
+    return JSONResponse(user_info.body, user_info.status_code)
 
-    return JSONResponse(
-        content=user,
-        status_code=status.HTTP_200_OK
-    )
-
-@router.get('/refresh-token')
+"""@router.get('/refresh-token')
 async def refreshToken(refresh_token: Depends = Depends(UserCtrl.verify_token), db_session = DependsConnection) -> UserResponse:
     id = refresh_token['sub']['user_id']
     user = await UserCtrl.refresh_token(db_session, id)
@@ -59,36 +79,8 @@ async def refreshToken(refresh_token: Depends = Depends(UserCtrl.verify_token), 
     return JSONResponse(
         content= user,
         status_code=status.HTTP_200_OK
-    )"""
+    )
 
-"""@router.post("/signup")
-async def signup(input: SignupRequest = Depends(), db_session = DependsConnection) -> SignupResponse:
-    try:
-        user = await UserCtrl.signup(db_session, input)
-        return SignupResponse(id=user.id)
-    except UserCtrl.exceptions.UserDuplicatedException as err:
-        #log.error("error 2  ")
-        JSONResponse(
-            {"detail": "User already exists"},
-            status_code=status.HTTP_400_BAD_REQUEST
-        )
-        return JSONResponse(err)
-    except Exception as err:
-        #log.error(err)
-        return JSONResponse({"message": "internal server"}, status_code=500)
-        
-@router.post("/signin")
-async def signin(input: SigninRequest, db_session = DependsConnection):
-    try:
-        login = await UserCtrl.signin(db_session, input)
-        if login:
-            return JSONResponse({"message" : "You're successfully logged in."}, status_code=200)
-    except UserCtrl.exceptions.UserNotFound:
-        return JSONResponse({"message": "Invalid Login or password. Please, check the credentials"}, status_code=401)
-    except Exception as err:
-        #log.error(err)
-        return JSONResponse({"message": "Server error."}, status_code=500)
-        
 @router.put("/{user_logged}/change-password")
 def change_password(user_logged:int, conn = Depends(Connection.db_session)):
     data = Request.json

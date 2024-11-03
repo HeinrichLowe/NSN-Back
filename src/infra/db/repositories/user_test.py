@@ -38,7 +38,7 @@ async def test_signin_with_username():
         await session.commit()
 
         user_repository = UserRepository()
-        response = await user_repository.search_by_username(mocked_user)
+        response = await user_repository.find_by_username(mocked_user)
 
         await session.execute(delete(User).where(User.id==response.id))
         await session.commit()
@@ -54,7 +54,7 @@ async def test_search_by_username():
         await session.commit()
 
         user_repository = UserRepository()
-        response = await user_repository.search_by_username(mocked_user.username)
+        response = await user_repository.find_by_username(mocked_user.username)
 
         await session.execute(delete(User).where(User.id==response.id))
         await session.commit()

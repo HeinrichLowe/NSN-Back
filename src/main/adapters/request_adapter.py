@@ -10,8 +10,6 @@ async def request_adapter(request: Request, controller: IController, schema: typ
 
         if schema:
             body_data = schema(**body).model_dump()
-        else:
-            body_data = body
 
     http_request = HttpRequest(
         headers=request.headers,

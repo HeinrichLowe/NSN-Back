@@ -1,5 +1,6 @@
 #from datetime import datetime
 from typing import List
+from uuid import UUID
 from sqlalchemy import insert, select#, update, delete, func
 from src.infra.db.settings.connection import Connection
 from src.infra.db.models.user import User
@@ -42,18 +43,18 @@ class UserRepository(IUserRepository):
                 cur.execute(sql)
             except Exception as err:
                 print(err)
-                raise Exception()
+                raise Exception()"""
 
-    async def search_by_id(self, db_session: AsyncSession, credentials: User) -> User:
-        async with db_session() as conn:
+    async def find_by_id(self, user_id: str) -> User:
+        async with Connection() as session:
             sql = select(User).where(
-                User.id == credentials.id,
-                User.deleted_at is None
+                User.id == UUID(user_id),
+                User.deleted_at.is_(None)
             )
-            result = await conn.execute(sql)
-            return result.scalars().one()"""
+            result = await session.execute(sql)
+            return result.scalars().first()
 
-    async def search_by_username(self, username: str) -> User:
+    async def find_by_username(self, username: str) -> User:
         async with Connection() as session:
             try:
                 sql = select(User).where(
@@ -67,7 +68,7 @@ class UserRepository(IUserRepository):
                 await session.rollback()
                 raise err
 
-    async def search_by_email(self, email: str) -> User:
+    async def find_by_email(self, email: str) -> User:
         async with Connection() as session:
             try:
                 sql = select(User).where(

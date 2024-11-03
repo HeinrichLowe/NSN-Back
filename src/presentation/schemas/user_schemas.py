@@ -62,8 +62,8 @@ class SignupResponse(BaseModel):
 
 # ----------------------- Signin Schemas -----------------------
 class SigninRequest(BaseModel):
-    email: str | None = Field(description="User Email")
-    username: str | None = Field(description="User Username")
+    email: str | None = Field(default=None, description="User Email")
+    username: str | None = Field(default=None, description="User Username")
     password: str | None = Field(description="User password")
 
     @model_validator(mode='after')
@@ -76,21 +76,20 @@ class SigninRequest(BaseModel):
 
         return self
 
-#class SigninResponse(BaseModel):
-#    access_token: str = Field(description="Generated access token")
-#    exp: str = Field(description="Token expiration time")
+class SigninResponse(BaseModel):
+    access_token: str = Field(description="Token de acesso")
+    access_exp: str = Field(description="Tempo de duração do token de acesso")
+    refresh_token: str = Field(description="Token para refresh da autenticacao")
+    refresh_exp: str = Field(description="Tempo de duração do token de refresh")
 
-#class UserResponse(BaseModel):
-#    username: str = Field(description="User username")
-#    name: str = Field(description="User full name")
-#    avatar: str = Field(description="User Avatar")
-#    email: str = Field(description="User email")
-#    birthday: str = Field(description="User birthday")
 
-#class SigninResponse(BaseModel):
-#    access_token: str = Field(description="token de accesso gerado")
-#    refresh_token: str = Field(description="token para refresh da autenticacao")
-#    expires_in: int = Field(description="tempo de duração do token")
+# ----------------------- Get basic user info Schemas -----------------------
+#class GetBasicUserInfoResponse(BaseModel):
+#    token: str = Field(description="Token de autenticação")
+
+class UserResponse(BaseModel):
+    name: str = Field(description="User full name")
+    avatar: str = Field(description="User Avatar")
 
 
 # ----------------------- Search by name Schemas -----------------------
