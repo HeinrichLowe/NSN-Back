@@ -4,7 +4,6 @@ import jwt
 from decouple import config
 from src.domain.entities.user import User
 from src.domain.use_cases.user.token_generator import ITokenGenerator
-from src.errors.types import HttpUnauthorizedError
 
 class TokenGenerator(ITokenGenerator):
     def __init__(self):
@@ -47,18 +46,6 @@ class TokenGenerator(ITokenGenerator):
             'refresh_token': refresh_token,
             'refresh_exp': refresh_exp.isoformat()
         }
-
-    async def verify_token(self, token: str) -> Dict:
-        try:
-            payload = jwt.decode(token, self.__secret_key, algorithms=[self.__algorithm])
-            return payload
-
-        except jwt.ExpiredSignatureError as err:
-            raise HttpUnauthorizedError("Token expirado") from err
-        except jwt.InvalidTokenError as err:
-            raise HttpUnauthorizedError("Token inválido") from err
-        except Exception as err:
-            raise HttpUnauthorizedError(f"Erro na verificação do token: {str(err)}") from err
 
     async def create_tokens(self, user_data: User) -> Dict:
         access_token = await self.__generate_access_token(user_data)
