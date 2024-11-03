@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Dict
 
 class ITokenGenerator(ABC):
-    """Interface for token generation and verification.
+    """Interface for token generation.
     
     Implementations of this interface should:
     1. Keep the logic for generating tokens (access and refresh) as private methods
@@ -23,15 +23,8 @@ class ITokenGenerator(ABC):
             
         async def create_tokens(self, user_data: Dict) -> Dict:
             # uses private methods to generate tokens
-            
-        async def verify_token(self, token: str) -> Dict:
-            # verification logic
     ```
     """
-
-    @abstractmethod
-    async def verify_token(self, token: str) -> Dict:
-        """Verifies the validity of a token."""
 
     @abstractmethod
     async def create_tokens(self, user_data: Dict) -> Dict:

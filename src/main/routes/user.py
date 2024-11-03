@@ -5,6 +5,7 @@ from src.errors.error_handler import handle_errors
 from src.main.adapters.request_adapter import request_adapter
 from src.main.composers.user import signup_composer, signin_composer
 from src.main.composers.user.search_by_name_composer import search_by_name_composer
+from src.main.composers.user.verify_token_composer import verify_token_composer
 from src.presentation.schemas.user_schemas import SignupRequest, SignupResponse, SigninRequest, SearchByNameRequest, SearchByNameResponse
 
 router = APIRouter()
@@ -31,37 +32,7 @@ async def signin(request: Request):
         http_response = handle_errors(err)
     return JSONResponse(http_response.body, http_response.status_code)
 
-"""@router.post("/signin")
-async def signin(input: SigninRequest, db_session = DependsConnection) -> SigninResponse:
-    try:
-        login = await UserCtrl.signin(db_session, input)
-
-        print(login)
-
-        if login == None:
-            return JSONResponse(
-                content={"msg": "User not exist"},
-                status_code=status.HTTP_401_UNAUTHORIZED
-            )
-        
-        if login == False:
-            return JSONResponse(
-                content={"msg": "Invalid Username or Password"},
-                status_code=status.HTTP_401_UNAUTHORIZED
-            )
-
-        return JSONResponse(
-            content=login,
-            status_code=status.HTTP_200_OK
-        )
-    
-    except Exception as e:
-        return JSONResponse(
-            content={'detail': e.args},
-            status_code=status.HTTP_400_BAD_REQUEST
-        )"""
-
-@router.get('/search-by-users')
+@router.get('/search-by-name')
 async def search_by_name(request: Request) -> SearchByNameResponse:
     http_response = None
     try:
