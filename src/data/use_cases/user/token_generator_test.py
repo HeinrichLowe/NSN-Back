@@ -2,6 +2,7 @@ from uuid import uuid4
 import pytest
 from src.domain.entities.user import User
 from .token_generator import TokenGenerator
+from .token_verifier import TokenVerifier
 
 
 @pytest.mark.asyncio
@@ -22,15 +23,13 @@ async def test_create_tokens():
 @pytest.mark.asyncio
 async def test_verify_access_token():
     token_generator = TokenGenerator()
+    token_verifier = TokenVerifier()
 
-    user_data = User({
-        "id": uuid4(),
-        "username": "test"
-    })
+    user_data = User({ "id": uuid4() })
 
     tokens = await token_generator.create_tokens(user_data)
 
-    verified_token = await token_generator.verify_token(tokens["access_token"])
+    verified_token = await token_verifier.verify_token(tokens["access_token"])
 
     assert verified_token is not None
     assert verified_token["sub"]["user_id"] == str(user_data.id)

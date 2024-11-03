@@ -11,7 +11,7 @@ class SignupController(IController):
         request = http_request.body
 
         response = await self.__use_case.execute(User(
-            email=request["email"],
+            email=request["email"].lower() if request["email"] else None,
             username=request["username"].lower() if request["username"] else None,
             password=request["password"],
             full_name=request["full_name"],

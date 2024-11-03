@@ -1,5 +1,6 @@
 from fastapi import Request
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
+from src.errors.types import HttpBadRequestError
 from src.presentation.http_types import HttpRequest, HttpResponse
 from src.presentation.interfaces.controller_interface import IController
 
@@ -9,7 +10,14 @@ async def request_adapter(request: Request, controller: IController, schema: typ
         body = await request.json()
 
         if schema:
-            body_data = schema(**body).model_dump()
+            try:
+                body_data = schema(**body).model_dump()
+            except ValidationError as e:
+                print(f"Erro inesperado: {str(e)}")
+                raise HttpBadRequestError(str(e)) from e
+            except Exception as e:
+                print(f"Erro inesperado: {str(e)}")
+                raise e
 
     http_request = HttpRequest(
         headers=request.headers,

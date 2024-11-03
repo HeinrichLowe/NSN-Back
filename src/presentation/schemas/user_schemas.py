@@ -6,8 +6,8 @@ from src.errors.types import HttpBadRequestError
 
 # ----------------------- Signup Schemas -----------------------
 class SignupRequest(BaseModel):
-    email: str | None = Field(description="email do usuario")
-    username: str | None = Field(description="nome do usuario para realizar o login")
+    email: str | None = Field(default=None, description="email do usuario")
+    username: str | None = Field(default=None, description="nome do usuario para realizar o login")
     password: str = Field(description="password do usuario para realizar o login")
     full_name: str = Field(description="nome completo (ou não) do usário")
     birth_date: datetime = Field(description="data de nascimento do usário. Ex: 01-01-1999")
@@ -34,11 +34,12 @@ class SignupRequest(BaseModel):
         if not self.full_name:
             raise HttpBadRequestError("Name is required")
 
-        if len(self.username) > 32:
-            raise HttpBadRequestError("Username too long")
+        if self.username:   
+            if len(self.username) > 32:
+                raise HttpBadRequestError("Username too long")
 
-        if len(self.username) < 3:
-            raise HttpBadRequestError("Username too short")
+            if len(self.username) < 3:
+                raise HttpBadRequestError("Username too short")
 
         if len(self.password) > 64:
             raise HttpBadRequestError("Password too long")

@@ -42,4 +42,6 @@ It is within my knowledge that 'dead code' (commented-out, unnecessary code) exi
 
 However, as the code is updated and that assistance is no longer needed, this 'dead code' will obviously be removed accordingly.
 
+Due to the code refactoring, the tests have become outdated and will need to be updated in the future.
+
 Thank you for your understanding.
