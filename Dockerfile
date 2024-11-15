@@ -4,6 +4,8 @@ FROM python:3.12-alpine
 
 WORKDIR /app
 
+RUN apk update && apk add --no-cache postgresql-client
+
 COPY requirements.txt .
 
 RUN pip install --no-cache-dir --upgrade pip && \
@@ -13,4 +15,4 @@ COPY . .
 
 EXPOSE 8000
 
-CMD ["python3", "main.py"]
+CMD ["sh", "-c", "./wait-for-db.sh"]

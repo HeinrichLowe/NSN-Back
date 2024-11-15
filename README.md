@@ -1,4 +1,16 @@
-## Getting Started
+# Getting Started
+
+### With docker:
+
+```bash
+docker-compose up
+```
+
+You can open [http://localhost:8000/ping](http://localhost:8000/ping) to verify if the server started correctly.
+
+##
+
+### Without docker:
 
 1- You need to install the dependencies:
 
