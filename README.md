@@ -1,6 +1,9 @@
 # Getting Started
 
 ### With docker:
+1- Rename the '.env.example' file to just '.env' and fill the fields with necessary informations.
+
+2- Run the docker-compose:
 
 ```bash
 docker-compose up
