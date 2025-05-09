@@ -13,6 +13,8 @@ services:
       - .env
     depends_on:
       - db
+    networks:
+      - bridge
 
   db:
     image: docker.io/library/postgres:latest
@@ -28,3 +30,7 @@ services:
 
 volumes:
   db:
+
+networks:
+  bridge:
+    driver: bridge
